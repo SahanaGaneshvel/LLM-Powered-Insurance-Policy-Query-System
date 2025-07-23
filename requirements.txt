@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+pdfplumber
+python-docx
+sentence-transformers
+faiss-cpu
+pymupdf
+httpx
+pydantic
+python-dotenv
+loguru
+streamlit
+# For Groq Llama API integration
+openai 

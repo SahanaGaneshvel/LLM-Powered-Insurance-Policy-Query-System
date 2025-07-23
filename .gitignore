@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment
+.env
+
+# Logs
+*.log
+query_log.jsonl
+
+# FAISS index and metadata
+faiss_index.bin
+faiss_meta.pkl
+
+# Streamlit
+.streamlit/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# VSCode
+.vscode/
+
+# Jupyter
+.ipynb_checkpoints/ 
