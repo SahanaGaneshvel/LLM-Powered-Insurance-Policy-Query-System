@@ -1,14 +1,31 @@
+# Core FastAPI dependencies
 fastapi
 uvicorn
-pdfplumber
-python-docx
-sentence-transformers
-faiss-cpu
-pymupdf
-httpx
 pydantic
+python-multipart
+
+# Document processing
+pymupdf
+python-docx
+aiofiles
+
+# Vector database
+pinecone
+numpy
+
+# LLM and embeddings
+groq
+sentence-transformers
+
+# HTTP client
+aiohttp
+requests
+
+# Utilities
 python-dotenv
 loguru
-streamlit
-# For Groq Llama API integration
-openai 
+tiktoken
+jsonschema
+
+# Optional: Redis for caching
+redis 
