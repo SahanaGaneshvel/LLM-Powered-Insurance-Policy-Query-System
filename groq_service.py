@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 """
-Vercel-Compatible Groq LLM Service for query parsing and clause matching
+Groq LLM Service for query parsing and clause matching
 """
 
 import os
 import asyncio
-import hashlib
 from typing import List, Dict, Any, Optional
 from loguru import logger
 from groq import Groq
+from sentence_transformers import SentenceTransformer
 import numpy as np
 
-class GroqServiceVercel:
-    """Vercel-compatible service for Groq LLM operations."""
+class GroqService:
+    """Service for Groq LLM operations."""
     
     def __init__(self):
         """Initialize Groq service."""
@@ -24,29 +24,21 @@ class GroqServiceVercel:
             
         try:
             self.client = Groq(api_key=self.api_key)
-            logger.info("GroqServiceVercel initialized successfully")
+            logger.info("GroqService initialized successfully")
         except Exception as e:
             logger.error(f"Failed to initialize Groq: {e}")
             self.client = None
     
-    def _simple_text_to_vector(self, text: str) -> List[float]:
-        """Convert text to simple vector using hash-based approach."""
-        # Simple hash-based embedding for Vercel compatibility
-        text_hash = hashlib.md5(text.encode()).hexdigest()
-        
-        # Convert hash to 128-dimensional vector
-        vector = []
-        for i in range(0, len(text_hash), 2):
-            if len(vector) >= 128:
-                break
-            hex_pair = text_hash[i:i+2]
-            vector.append(float(int(hex_pair, 16)) / 255.0)
-        
-        # Pad to 128 dimensions if needed
-        while len(vector) < 128:
-            vector.append(0.0)
-        
-        return vector[:128]
+    def get_embeddings(self, texts: List[str]) -> List[List[float]]:
+        """Generate embeddings for texts using sentence transformers."""
+        try:
+            # Initialize sentence transformer model
+            model = SentenceTransformer('all-MiniLM-L6-v2')
+            embeddings = model.encode(texts)
+            return embeddings.tolist()
+        except Exception as e:
+            logger.error(f"Error generating embeddings: {e}")
+            return []
     
     async def parse_query(self, query: str) -> Dict[str, Any]:
         """Parse natural language query into structured format."""
@@ -230,56 +222,6 @@ class GroqServiceVercel:
             "confidence": confidence
         }
     
-    def _fallback_generate_answer(self, query: str, relevant_texts: List[str]) -> str:
-        """Fallback answer generation using simple text processing."""
-        if not relevant_texts:
-            return "No relevant information found in the document."
-        
-        # Combine relevant texts
-        combined_text = " ".join(relevant_texts)
-        
-        # Simple answer extraction
-        query_lower = query.lower()
-        combined_lower = combined_text.lower()
-        
-        # Find sentences that contain query keywords
-        sentences = combined_text.split('.')
-        relevant_sentences = []
-        
-        for sentence in sentences:
-            sentence_lower = sentence.lower()
-            if any(word in sentence_lower for word in query_lower.split()):
-                relevant_sentences.append(sentence.strip())
-        
-        if relevant_sentences:
-            answer = ". ".join(relevant_sentences[:3])  # Limit to 3 sentences
-            if not answer.endswith('.'):
-                answer += "."
-        else:
-            answer = combined_text[:500] + "..." if len(combined_text) > 500 else combined_text
-        
-        return answer
-    
-    def get_embeddings(self, texts: List[str]) -> List[List[float]]:
-        """Generate simple embeddings for texts."""
-        try:
-            embeddings = []
-            for text in texts:
-                embedding = self._simple_text_to_vector(text)
-                embeddings.append(embedding)
-            return embeddings
-        except Exception as e:
-            logger.error(f"Error generating embeddings: {e}")
-            return []
-    
-    async def batch_parse_queries(self, queries: List[str]) -> List[Dict[str, Any]]:
-        """Parse multiple queries in batch."""
-        return [await self.parse_query(query) for query in queries]
-    
-    async def batch_evaluate_clauses(self, query: str, clauses: List[str]) -> List[Dict[str, Any]]:
-        """Evaluate multiple clauses for a single query."""
-        return [await self.evaluate_clause(query, clause) for clause in clauses]
-    
     async def generate_detailed_answer(self, query: str, relevant_texts: List[str]) -> str:
         """Generate detailed answer using Groq LLM."""
         if not self.client:
@@ -314,6 +256,44 @@ class GroqServiceVercel:
         except Exception as e:
             logger.error(f"Error generating detailed answer: {e}")
             return self._fallback_generate_answer(query, relevant_texts)
+    
+    def _fallback_generate_answer(self, query: str, relevant_texts: List[str]) -> str:
+        """Fallback answer generation using simple text processing."""
+        if not relevant_texts:
+            return "No relevant information found in the document."
+        
+        # Combine relevant texts
+        combined_text = " ".join(relevant_texts)
+        
+        # Simple answer extraction
+        query_lower = query.lower()
+        combined_lower = combined_text.lower()
+        
+        # Find sentences that contain query keywords
+        sentences = combined_text.split('.')
+        relevant_sentences = []
+        
+        for sentence in sentences:
+            sentence_lower = sentence.lower()
+            if any(word in sentence_lower for word in query_lower.split()):
+                relevant_sentences.append(sentence.strip())
+        
+        if relevant_sentences:
+            answer = ". ".join(relevant_sentences[:3])  # Limit to 3 sentences
+            if not answer.endswith('.'):
+                answer += "."
+        else:
+            answer = combined_text[:500] + "..." if len(combined_text) > 500 else combined_text
+        
+        return answer
+    
+    async def batch_parse_queries(self, queries: List[str]) -> List[Dict[str, Any]]:
+        """Parse multiple queries in batch."""
+        return [await self.parse_query(query) for query in queries]
+    
+    async def batch_evaluate_clauses(self, query: str, clauses: List[str]) -> List[Dict[str, Any]]:
+        """Evaluate multiple clauses for a single query."""
+        return [await self.evaluate_clause(query, clause) for clause in clauses]
     
     async def batch_generate_answers(self, queries: List[str], relevant_texts_list: List[List[str]]) -> List[str]:
         """Generate answers for multiple queries in batch."""

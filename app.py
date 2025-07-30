@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
 Main FastAPI application for LLM-Powered Intelligent Query–Retrieval System
-Updated for Vercel compatibility - No sentence_transformers dependency
 """
 
 import os

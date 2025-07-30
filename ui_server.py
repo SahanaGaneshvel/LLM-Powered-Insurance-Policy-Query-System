@@ -18,8 +18,8 @@ from datetime import datetime
 
 # Import your existing services
 from document_parser import DocumentParser
-from embedding_service_vercel import EmbeddingServiceVercel
-from groq_service_vercel import GroqServiceVercel
+from embedding_service import EmbeddingService
+from groq_service import GroqService
 from utils import PerformanceMonitor, CacheManager
 
 # Initialize FastAPI app
@@ -40,8 +40,8 @@ app.add_middleware(
 
 # Initialize services
 document_parser = DocumentParser()
-embedding_service = EmbeddingServiceVercel()
-groq_service = GroqServiceVercel()
+embedding_service = EmbeddingService()
+groq_service = GroqService()
 performance_monitor = PerformanceMonitor()
 cache_manager = CacheManager()
 
