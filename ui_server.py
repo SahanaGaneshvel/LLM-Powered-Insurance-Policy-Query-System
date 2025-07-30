@@ -18,7 +18,7 @@ from datetime import datetime
 
 # Import your existing services
 from document_parser import DocumentParser
-from embedding_service import EmbeddingService
+from embedding_service_vercel import EmbeddingServiceVercel
 from groq_service import GroqService
 from utils import PerformanceMonitor, CacheManager
 
@@ -40,7 +40,7 @@ app.add_middleware(
 
 # Initialize services
 document_parser = DocumentParser()
-embedding_service = EmbeddingService()
+embedding_service = EmbeddingServiceVercel()
 groq_service = GroqService()
 performance_monitor = PerformanceMonitor()
 cache_manager = CacheManager()
