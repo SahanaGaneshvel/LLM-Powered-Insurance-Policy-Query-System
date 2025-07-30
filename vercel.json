@@ -2,17 +2,22 @@
   "version": 2,
   "builds": [
     {
-      "src": "app.py",
+      "src": "ui_server.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "app.py"
+      "dest": "ui_server.py"
     }
   ],
   "env": {
     "PYTHONPATH": "."
+  },
+  "functions": {
+    "ui_server.py": {
+      "maxDuration": 30
+    }
   }
 } 
