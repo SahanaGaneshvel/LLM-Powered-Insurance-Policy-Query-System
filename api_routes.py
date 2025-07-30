@@ -14,13 +14,13 @@ from loguru import logger
 
 from document_parser import DocumentParser
 from embedding_service_vercel import EmbeddingServiceVercel
-from groq_service import GroqService
+from groq_service_vercel import GroqServiceVercel
 from utils import PerformanceMonitor, CacheManager
 
 # Initialize services
 document_parser = DocumentParser()
 embedding_service = EmbeddingServiceVercel()
-groq_service = GroqService()
+groq_service = GroqServiceVercel()
 
 # Performance monitoring
 performance_monitor = PerformanceMonitor()
