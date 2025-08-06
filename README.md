@@ -40,6 +40,24 @@ python start.py
 ```
 Access at: `http://localhost:8000`
 
+### 4. Deploy to Railway
+
+**Install Railway CLI:**
+```bash
+npm install -g @railway/cli
+```
+
+**Login and Deploy:**
+```bash
+railway login
+railway up
+```
+
+**Set Environment Variables in Railway Dashboard:**
+- `GROQ_API_KEY`
+- `PINECONE_API_KEY`
+- `PINECONE_ENVIRONMENT`
+
 ## API Usage
 
 ### Authentication

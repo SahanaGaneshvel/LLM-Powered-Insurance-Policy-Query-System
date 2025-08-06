@@ -52,15 +52,5 @@ logs/
 .cache/
 .pytest_cache/
 
-# Vercel
-.vercel 
-.vercel
-
 # Deployment files (keep these in repo)
-# vercel.json
 # railway.json
-# render.yaml
-# Procfile
-# runtime.txt
-# Dockerfile
-# docker-compose.yml
