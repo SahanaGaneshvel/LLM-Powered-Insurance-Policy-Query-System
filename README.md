@@ -40,23 +40,22 @@ python start.py
 ```
 Access at: `http://localhost:8000`
 
-### 4. Deploy to Railway
+### 4. Deploy with Docker (Local)
 
-**Install Railway CLI:**
+**Build and run with Docker Compose:**
 ```bash
-npm install -g @railway/cli
+docker-compose up -d
 ```
 
-**Login and Deploy:**
+**Or build and run manually:**
 ```bash
-railway login
-railway up
+docker build -t insurance-query-system .
+docker run -p 8000:8000 --env-file .env insurance-query-system
 ```
 
-**Set Environment Variables in Railway Dashboard:**
-- `GROQ_API_KEY`
-- `PINECONE_API_KEY`
-- `PINECONE_ENVIRONMENT`
+**Access the application:**
+- API: `http://localhost:8000`
+- Health check: `http://localhost:8000/health`
 
 ## API Usage
 
